@@ -6,6 +6,8 @@ require "singleton"
 class Rollout
   include Singleton
   
+  attr_writer :storage
+  
   class Feature
     attr_reader :name, :groups, :users, :percentage
     attr_writer :percentage, :groups, :users
@@ -85,7 +87,7 @@ class Rollout
       instance.public_send(method, *args)
     end
   end
-
+  
   def setup(storage, opts = {})
     @storage  = storage
     @groups = {:all => lambda { |user| true }}

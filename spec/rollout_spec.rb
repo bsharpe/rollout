@@ -5,6 +5,7 @@ describe "Rollout" do
     @redis   = Redis.new
     Rollout.setup(@redis)
     @rollout = Rollout.instance
+    Rollout.storage = Redis.new
   end
 
   describe "when a group is activated" do
