@@ -1,8 +1,11 @@
 require "rollout/version"
 require "rollout/legacy"
 require "zlib"
+require "singleton"
 
 class Rollout
+  include Singleton
+  
   class Feature
     attr_reader :name, :groups, :users, :percentage
     attr_writer :percentage, :groups, :users
@@ -76,13 +79,19 @@ class Rollout
         end
       end
   end
+  
+  class << self
+    def method_missing(method, *args, &block)
+      instance.public_send(method, *args)
+    end
+  end
 
-  def initialize(storage, opts = {})
+  def setup(storage, opts = {})
     @storage  = storage
     @groups = {:all => lambda { |user| true }}
     @legacy = Legacy.new(opts[:legacy_storage] || @storage) if opts[:migrate]
   end
-
+  
   def activate(feature)
     with_feature(feature) do |f|
       f.percentage = 100

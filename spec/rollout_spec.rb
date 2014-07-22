@@ -3,7 +3,8 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Rollout" do
   before do
     @redis   = Redis.new
-    @rollout = Rollout.new(@redis)
+    Rollout.setup(@redis)
+    @rollout = Rollout.instance
   end
 
   describe "when a group is activated" do
@@ -259,7 +260,8 @@ describe "Rollout" do
       @legacy.activate_user(:chat, stub(:id => 42))
       @legacy.activate_user(:chat, stub(:id => 24))
       @legacy.activate_group(:chat, :dope_people)
-      @rollout = Rollout.new(@redis, :migrate => true)
+      Rollout.setup(@redis, migrate: true)
+      @rollout = Rollout.instance
     end
 
     it "imports the settings from the legacy rollout once" do
