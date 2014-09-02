@@ -99,6 +99,20 @@ describe "Rollout" do
     end
   end
 
+  describe "activating multiple users ids" do
+    before do
+      @rollout.activate_user_ids(:chat, [1,'user-2',3,4,5,10,'user-72'])
+    end
+
+    it "is active for that user" do
+      @rollout.should be_active(:chat, stub(:id => 'user-72'))
+    end
+
+    it "remains inactive for other users" do
+      @rollout.should_not be_active(:chat, stub(:id => 'user-12'))
+    end
+  end
+
   describe "activating a specific user with a string id" do
     before do
       @rollout.activate_user(:chat, stub(:id => 'user-72'))

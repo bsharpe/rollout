@@ -31,6 +31,11 @@ class Rollout
     def add_user(user)
       @users << user.id.to_s unless @users.include?(user.id.to_s)
     end
+    
+    def add_user_ids(user_ids)
+      user_ids = [user_ids].flatten.map(&:to_s)
+      @users = (@users + user_ids).uniq
+    end
 
     def remove_user(user)
       @users.delete(user.id.to_s)
@@ -121,6 +126,13 @@ class Rollout
   def activate_user(feature, user)
     with_feature(feature) do |f|
       f.add_user(user)
+    end
+  end
+  
+  def activate_user_ids(feature, user_ids)
+    user_ids = [user_ids].flatten.uniq
+    with_feature(feature) do |f|
+      f.add_user_ids(user_ids)
     end
   end
 
